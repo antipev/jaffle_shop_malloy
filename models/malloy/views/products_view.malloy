@@ -1,0 +1,8 @@
+source: products is bigquery.table('my-1-st-project-training.dbt_maksim_ml.products') extend {
+  
+  measure: 
+          product_value is sum(product_price)
+          product_count is count(product_id)
+          
+          product_avg_value is product_value/nullif(product_count,0)
+}

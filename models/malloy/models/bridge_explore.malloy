@@ -1,0 +1,61 @@
+// 1. Import your transformed view files using relative paths
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/customers_view.malloy"
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/locations_view.malloy"
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/products_view.malloy"
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/supplies_view.malloy"
+// 2. Import your bridge using relative paths
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/refined/bridge_dynamic_refined.malloy"
+
+// 3. Define the first "Explorer": Bridge
+source: bridge_explore is bridge_dynamic_refined extend {
+  // select dim tables that would be connected via join
+
+  // Dims are joined via keys to Bridge table. The intention is to have Bridge Table as small as possible 
+  // and Dynamic: to be build on the fly depending on the selected Measures and Dimension
+  
+  // Chained "dims" joins: Malloy allows you to reach through to these tables
+  join_one: customers   on customer_id            = customers.customer_id                    
+  join_one: locations   on location_id            = locations.location_id
+  
+  join_one: products    on product_id             = products.product_id
+  
+  join_one: supplies    on products.product_id    = supplies.product_id
+
+
+  view: cross_view_measure is {
+    aggregate: 
+      product_value_per_order
+      product_cost_per_order
+      gross_margin_per_order
+      --
+      order_items.product_value
+      order_items.product_supply_cost
+      --
+      gross_margin_total
+      --
+      orders.order_count 
+      orders.order_value
+      orders.order_avg_value
+      
+  } 
+
+    view: orders_only is {
+    where: stage = 'orders'
+    aggregate: 
+      --
+      orders.order_count 
+      orders.order_value
+      orders.order_avg_value
+      --  
+  } 
+   
+    view: order_items_only is {
+    where: stage = 'order_items'
+    aggregate: 
+      --
+      order_items.product_value
+      order_items.product_supply_cost
+      --  
+
+  } 
+}

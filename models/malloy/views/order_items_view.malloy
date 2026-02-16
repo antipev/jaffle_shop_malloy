@@ -1,0 +1,15 @@
+
+
+source: order_items is bigquery.table('my-1-st-project-training.dbt_maksim_ml.order_items') extend {
+  
+  measure: 
+          order_count is count(order_id)
+          basket_size is count(order_item_id)
+          basket_avg_size is basket_size/nullif(order_count,0)
+
+          product_value is sum(product_price)
+          product_avg_value is product_value/nullif(basket_size,0)
+          product_supply_cost is sum(supply_cost)
+          product_avg_supply_cost is product_supply_cost/nullif(basket_size,0)
+}
+

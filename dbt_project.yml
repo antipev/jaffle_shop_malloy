@@ -1,0 +1,42 @@
+name: jaffle_shop
+
+profile: dbt_maksim_ml
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+analysis-paths: ["analyses"]
+snapshot-paths: ["snapshots"]
+asset-paths: ["assets"]
+
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+seeds:
+
+  jaffle_shop:
+    # No schema override here; they will land in dbt_maksim_ml
+    +quote_columns: false
+
+models:
+  jaffle_shop:
+    
+    +submission_method: "bigframes"
+    +intermediate_storage_bucket: "my-1-st-project-training-dbt-staging"
+    +location: "US"
+    # Materialize staging models as views, and marts as tables
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table
+    ml:
+      # Use this for the "Notebook-style" serverless Python execution
+      +submission_method: bigframes
+      +materialized: table  # Python models in BQ must be tables
+    malloy:
+      +materialized: table # default
+
+    

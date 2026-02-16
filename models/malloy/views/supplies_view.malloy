@@ -1,0 +1,21 @@
+##! description="Procurement data containing supply costs and product-to-supply relationships"
+source: supplies is bigquery.table('my-1-st-project-training.dbt_maksim_ml.supplies') extend {
+  
+  measure: 
+    # description="Total expenditure on supplies for products."
+      product_supply_cost is sum(supply_cost),
+
+    # description="The number of unique products associated with these supplies."
+      product_count is count(product_id),
+
+    # description="Total count of individual supply records/shipments."
+      supply_count is count(supply_id),
+
+    # description="Average number of products per supply entry."
+      product_avg_count_per_supply is product_count / nullif(supply_count, 0),
+
+    # description="Average cost per supply record."
+      product_avg_supply_cost_per_supply is product_supply_cost / nullif(supply_count, 0)
+}
+
+query: test is supplies -> { aggregate: product_supply_cost }

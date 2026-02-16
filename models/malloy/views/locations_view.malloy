@@ -1,0 +1,8 @@
+source: locations is bigquery.table('my-1-st-project-training.dbt_maksim_ml.locations') extend {
+  
+  measure: 
+                
+          location_count is count(location_id)
+          
+}
+

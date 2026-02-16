@@ -1,0 +1,15 @@
+source: customers is bigquery.table('my-1-st-project-training.dbt_maksim_ml.customers') extend {
+  
+  measure: 
+          customer_lifetime_orders is sum(count_lifetime_orders)
+          customer_ltv is sum(lifetime_spend)
+          customer_ltv_pretax is sum(lifetime_spend_pretax)
+          customer_ltv_tax is sum(lifetime_tax_paid)
+
+          customer_count is count(customer_id)
+
+
+          customer_avg_lifetime_orders is customer_lifetime_orders/nullif(customer_count,0)
+          customer_avg_ltv_pretax is customer_ltv_pretax/nullif(customer_count,0)
+}
+

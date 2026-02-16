@@ -1,0 +1,14 @@
+
+source: orders is bigquery.table('my-1-st-project-training.dbt_maksim_ml.orders') extend {
+  
+  measure: 
+          order_count is count()
+          order_value is sum(order_total)
+          order_avg_value is order_value/nullif(order_count,0)
+          
+}
+
+query: orders_by_location is orders -> {
+  group_by: location_id
+  aggregate: order_count
+}

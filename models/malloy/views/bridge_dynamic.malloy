@@ -1,0 +1,16 @@
+source: bridge_dynamic is bigquery.sql("""
+  -- SELECT  "customers"      AS stage,
+  -- UNION ALL
+  -- SELECT  "locations"      AS stage,
+  -- UNION ALL
+  SELECT  "order_items"    AS stage,
+  UNION ALL
+  SELECT  "orders"         AS stage,
+  -- UNION ALL
+  -- SELECT  "products"       AS stage,
+  -- UNION ALL
+  -- SELECT  "supplies"       AS stage
+""")  extend {
+  primary_key: stage
+  
+}

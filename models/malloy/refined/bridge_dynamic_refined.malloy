@@ -1,0 +1,68 @@
+// 1. Import your transformed view files using relative paths
+
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/order_items_view.malloy"
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/orders_view.malloy"
+
+// 2. Import your bridge using relative paths
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/bridge_dynamic.malloy"
+
+// 3. Build Bridge With Keys Needed based on Fact tables
+source: bridge_dynamic_refined is bridge_dynamic extend {
+  // select fact tables that would be connected as union
+  join_one: orders      on stage                  = "orders"
+  join_one: order_items on stage                  = "order_items" 
+  // Order_items can be joined with orders table using order_id keys
+  // However, here is shown example of how it can be done differently via UNION bridge + Dynamic: with second fact table
+  // Another words let'say order_items (or other fact table) does not have all order_ids to be linked to table
+  // For instanse: order table shows sales from physical locations, but sales from websites are not available in similar table in DWH
+  // but order_items tables contains records from order table as well as from other table, which are not available here
+  // Or simply instead of order_items could be contact table or event table etc.
+  
+  
+// 4. Build Keys to Connect to Other Tables
+  dimension:
+    order_id is       pick orders.order_id
+                      when stage = 'orders'
+                      pick order_items.order_id  
+                      when stage = 'order_items'
+                      else null
+
+    customer_id is    pick orders.customer_id
+                      when stage = 'orders'
+                      pick order_items.customer_id  
+                      when stage = 'order_items'
+                      else null 
+    location_id is    pick orders.location_id
+                      when stage = 'orders'
+                      pick order_items.location_id  
+                      when stage = 'order_items'
+                      else null   
+    product_id is     pick null
+                      when stage = 'orders'
+                      pick order_items.product_id  
+                      when stage = 'order_items'
+                      else null                        
+  
+
+  measure:
+    product_value_per_order is pick order_items.product_value 
+                                    / 
+                                    orders.order_count 
+                               when orders.order_count != 0
+                               else 0
+
+    product_cost_per_order  is pick order_items.product_supply_cost 
+                                    / 
+                                    orders.order_count 
+                               when orders.order_count != 0
+                               else 0
+    
+    gross_margin_per_order is product_value_per_order
+                              - 
+                              product_cost_per_order
+    
+    gross_margin_total     is order_items.product_value
+                              - 
+                              order_items.product_supply_cost 
+ 
+}
