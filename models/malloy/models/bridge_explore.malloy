@@ -1,10 +1,10 @@
 // 1. Import your transformed view files using relative paths
-import "../views/customers_view.malloy"
-import "../views/locations_view.malloy"
-import "../views/products_view.malloy"
-import "../views/supplies_view.malloy"
+import "./models/malloy/views/customers_view.malloy"
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/locations_view.malloy"
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/products_view.malloy"
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/supplies_view.malloy"
 // 2. Import your bridge using relative paths
-import "../refined/bridge_dynamic_refined.malloy"
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/refined/bridge_dynamic_refined.malloy"
 
 // 3. Define the first "Explorer": Bridge
 source: bridge_explore is bridge_dynamic_refined extend {

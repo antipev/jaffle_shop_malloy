@@ -1,10 +1,10 @@
 // 1. Import your transformed view files using relative paths
 
-import "../views/order_items_view.malloy"
-import "../views/orders_view.malloy"
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/order_items_view.malloy"
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/orders_view.malloy"
 
 // 2. Import your bridge using relative paths
-import "../views/bridge_dynamic.malloy"
+import "/home/maxantipev_dbt_malloy_ml/jaffle_shop/models/malloy/views/bridge_dynamic.malloy"
 
 // 3. Build Bridge With Keys Needed based on Fact tables
 source: bridge_dynamic_refined is bridge_dynamic extend {
